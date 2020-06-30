@@ -38,4 +38,4 @@ $response = $http->sendRequest($request);
 # Provided cookies stores
 
 * `\Webclient\Extension\Cookie\Cookie\ArrayStorage` - Cookies stored in memory.  
-* `\Webclient\Extension\Cookie\Cookie\NetscapeCookieFile` - Cookies stored in a file ([format][https://curl.haxx.se/docs/http-cookies.html]).  
+* `\Webclient\Extension\Cookie\Cookie\NetscapeCookieFile` - Cookies stored in a file ([format](https://curl.haxx.se/docs/http-cookies.html)).  
