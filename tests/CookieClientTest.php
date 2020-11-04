@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Webclient\Extension\Cookie;
 
-use Nyholm\Psr7\Request;
+use GuzzleHttp\Psr7\Request;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Client\ClientExceptionInterface;
 use Stuff\Webclient\Extension\Cookie\Handler;
