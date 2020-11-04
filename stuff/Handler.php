@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Stuff\Webclient\Extension\Cookie;
 
-use Nyholm\Psr7\Response;
+use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
