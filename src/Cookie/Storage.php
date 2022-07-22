@@ -6,28 +6,10 @@ namespace Webclient\Extension\Cookie\Cookie;
 
 use Psr\Http\Message\UriInterface;
 
-use function array_key_exists;
-use function ltrim;
-use function mb_strlen;
-use function mb_strpos;
-use function mb_strtolower;
-use function mb_substr;
-use function rtrim;
-use function str_pad;
-use function time;
-use function trim;
-
 abstract class Storage
 {
+    private array $cookies = [];
 
-    /**
-     * @var array
-     */
-    private $cookies = [];
-
-    /**
-     * @inheritDoc
-     */
     final public function get(UriInterface $uri): array
     {
         $cookies = [];
@@ -62,9 +44,6 @@ abstract class Storage
         return $cookies;
     }
 
-    /**
-     * @inheritDoc
-     */
     final public function set(
         string $name,
         string $value,
@@ -97,7 +76,7 @@ abstract class Storage
         }
         $this->cookies[$scheme][$domain][$name] = [
             'value' => $value,
-            'expired' => $expire > 0 ? $expire : 0,
+            'expired' => max($expire, 0),
             'path' => '/' . ltrim($path, '/'),
         ];
     }

@@ -4,20 +4,13 @@ declare(strict_types=1);
 
 namespace Stuff\Webclient\Extension\Cookie;
 
-use GuzzleHttp\Psr7\Response;
+use Nyholm\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-use function array_key_exists;
-use function date;
-use function implode;
-use function is_array;
-use function time;
-
 class Handler implements RequestHandlerInterface
 {
-
     /**
      * @param ServerRequestInterface $request
      * @return ResponseInterface

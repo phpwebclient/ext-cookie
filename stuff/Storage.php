@@ -8,7 +8,6 @@ use Webclient\Extension\Cookie\Cookie\Storage as BaseStorage;
 
 class Storage extends BaseStorage
 {
-
     public function getItems(): array
     {
         $result = [];

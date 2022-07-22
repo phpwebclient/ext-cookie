@@ -12,7 +12,7 @@ Cookie extension for PSR-18 HTTP client.
 Install this package and your favorite [psr-18 implementation](https://packagist.org/providers/psr/http-client-implementation).
 
 ```bash
-composer require webclient/ext-cookie:^1.0
+composer require webclient/ext-cookie:^2.0
 ```
 
 # Using
@@ -22,14 +22,14 @@ composer require webclient/ext-cookie:^1.0
 
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
-use Webclient\Extension\Cookie\Client;
+use Webclient\Extension\Cookie\CookieClientDecorator;
 use Webclient\Extension\Cookie\Cookie\Storage;
 
 /** 
  * @var ClientInterface $client Your PSR-18 HTTP Client
  * @var Storage $storage Cookies storage. You may extends this class for implements your storage
  */
-$http = new Client($client, $storage);
+$http = new CookieClientDecorator($client, $storage);
 
 /** @var RequestInterface $request */
 $response = $http->sendRequest($request);

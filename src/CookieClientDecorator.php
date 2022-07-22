@@ -9,24 +9,10 @@ use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Webclient\Extension\Cookie\Cookie\Storage;
 
-use function array_replace;
-use function explode;
-use function strtolower;
-use function strtotime;
-use function trim;
-
-final class Client implements ClientInterface
+final class CookieClientDecorator implements ClientInterface
 {
-
-    /**
-     * @var ClientInterface
-     */
-    private $client;
-
-    /**
-     * @var Storage
-     */
-    private $storage;
+    private ClientInterface $client;
+    private Storage $storage;
 
     public function __construct(ClientInterface $client, Storage $storage)
     {
@@ -94,14 +80,14 @@ final class Client implements ClientInterface
                     }
                     break;
                 case 'path':
-                    $path = $value ? $value : '/';
+                    $path = $value ?: '/';
                     break;
                 case 'secure':
                     $secure = true;
                     break;
                 case 'expires':
                     $timestamp = strtotime($value);
-                    $expires = $timestamp > 0 ? $timestamp : 0;
+                    $expires = max($timestamp, 0);
                     break;
                 case 'httponly':
                     break;

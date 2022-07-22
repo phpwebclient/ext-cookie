@@ -4,17 +4,16 @@ declare(strict_types=1);
 
 namespace Tests\Webclient\Extension\Cookie;
 
-use GuzzleHttp\Psr7\Request;
+use Nyholm\Psr7\Request;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Client\ClientExceptionInterface;
 use Stuff\Webclient\Extension\Cookie\Handler;
 use Stuff\Webclient\Extension\Cookie\Storage;
-use Webclient\Extension\Cookie\Client;
-use Webclient\Fake\Client as FakeClient;
+use Webclient\Extension\Cookie\CookieClientDecorator;
+use Webclient\Fake\FakeHttpClient;
 
 class CookieClientTest extends TestCase
 {
-
     /**
      * @param bool $secure
      * @param string $host
@@ -29,7 +28,7 @@ class CookieClientTest extends TestCase
 
         $storage = new Storage();
 
-        $client = new Client(new FakeClient(new Handler()), $storage);
+        $client = new CookieClientDecorator(new FakeHttpClient(new Handler()), $storage);
 
         $set = [
             'cookie' => [
@@ -44,13 +43,15 @@ class CookieClientTest extends TestCase
         $request = new Request('GET', $uri, ['Accept' => 'text/plain']);
         $client->sendRequest($request);
 
-        $path = $path ? $path : '/';
+        if ($path === '') {
+            $path = '/';
+        }
         $cookies = $storage->getItems();
         foreach ($set['cookie'] as $name => $value) {
             $this->assertArrayHasKey($name, $cookies);
             $domain = in_array($name, $set['subdomain']) ? '.' . $host : $host;
             $temp = in_array($name, $set['temp']);
-            $this->assertStoredCookie($cookies[$name], $value, $domain, $path, true, $secure, $temp);
+            $this->assertStoredCookie($cookies[$name], $value, $domain, $path, $secure, $temp);
         }
     }
 
@@ -129,7 +130,7 @@ class CookieClientTest extends TestCase
         }
 
 
-        $client = new Client(new FakeClient(new Handler()), $storage);
+        $client = new CookieClientDecorator(new FakeHttpClient(new Handler()), $storage);
         $request = new Request('GET', $uri, ['Accept' => 'text/plain']);
         $response = $client->sendRequest($request);
         $json = $response->getBody()->__toString();
@@ -166,14 +167,13 @@ class CookieClientTest extends TestCase
         string $value,
         string $domain,
         string $path,
-        bool $httpOnly,
         bool $secure,
         bool $temporary
     ) {
         $this->assertSame($value, $cookie['value']);
         $this->assertSame($domain, $cookie['domain']);
         $this->assertSame($path, $cookie['path']);
-        $this->assertSame($httpOnly, $cookie['httpOnly']);
+        $this->assertSame(true, $cookie['httpOnly']);
         $this->assertSame($secure, $cookie['secure']);
         $this->assertSame($temporary, $cookie['expired'] === 0);
     }

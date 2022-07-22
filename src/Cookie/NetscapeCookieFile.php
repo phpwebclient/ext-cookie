@@ -25,11 +25,7 @@ use function trim;
 
 final class NetscapeCookieFile extends Storage
 {
-
-    /**
-     * @var string
-     */
-    private $file;
+    private string $file;
 
     public function __construct(string $file)
     {
