@@ -8,8 +8,15 @@ use Psr\Http\Message\UriInterface;
 
 abstract class Storage
 {
+    /**
+     * @var array<string, array<string, array<string, array{value: string, expired: int, path: string}>>>
+     */
     private array $cookies = [];
 
+    /**
+     * @param UriInterface $uri
+     * @return array<string, string>
+     */
     final public function get(UriInterface $uri): array
     {
         $cookies = [];
@@ -49,9 +56,9 @@ abstract class Storage
         string $value,
         string $domain,
         string $path = '/',
-        $expire = 0,
-        $secure = false
-    ) {
+        int $expire = 0,
+        bool $secure = false
+    ): void {
         $scheme = 'http' . ($secure ? 's' : '');
         $name = trim($name);
         if (!$name) {
@@ -81,8 +88,11 @@ abstract class Storage
         ];
     }
 
-    abstract public function save();
+    abstract public function save(): void;
 
+    /**
+     * @return array<string, array<string, array<string, array{value: string, expired: int, path: string}>>>
+     */
     protected function all(): array
     {
         return $this->cookies;

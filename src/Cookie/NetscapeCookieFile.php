@@ -51,24 +51,24 @@ final class NetscapeCookieFile extends Storage
             throw new InvalidArgumentException('Can not read file ' . $file, 1, $exception);
         }
         $lines = preg_split('/\r(\n)?/ui', $contents);
-        foreach ($lines as $num => $line) {
+        foreach ($lines as $line) {
             $line = trim($line);
             if (!$line || mb_substr($line, 0, 1) === '#') {
                 continue;
             }
-            $row = array_replace([null, 'FALSE', '/', 'FALSE', 0, null, null], str_getcsv($line, "\t"));
-            $name = trim((string)$row[5]);
-            $value = trim((string)$row[6]);
+            $row = array_replace(['', 'FALSE', '/', 'FALSE', '0', '', ''], str_getcsv($line, "\t"));
+            $name = trim($row[5]);
+            $value = trim($row[6]);
             if (!$name || !$value) {
                 continue;
             }
-            $domain = trim((string)$row[0]);
+            $domain = trim($row[0]);
             $domain = ltrim($domain, '.');
-            if (mb_strtoupper(trim((string)$row[1])) === 'TRUE') {
+            if (mb_strtoupper(trim($row[1])) === 'TRUE') {
                 $domain = '.' . $domain;
             }
-            $secure = mb_strtoupper(trim((string)$row[3])) === 'TRUE';
-            $path = trim((string)$row[2]);
+            $secure = mb_strtoupper(trim($row[3])) === 'TRUE';
+            $path = trim($row[2]);
             $expired = (int)$row[4];
             if ($expired < 0) {
                 $expired = 0;
@@ -77,7 +77,7 @@ final class NetscapeCookieFile extends Storage
         }
     }
 
-    public function save()
+    public function save(): void
     {
         $contents = '';
         foreach ($this->all() as $scheme => $domains) {

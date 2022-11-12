@@ -6,7 +6,7 @@ namespace Webclient\Extension\Cookie\Cookie;
 
 final class ArrayStorage extends Storage
 {
-    public function save()
+    public function save(): void
     {
     }
 }

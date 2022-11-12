@@ -23,9 +23,8 @@ class CookieClientTest extends TestCase
      *
      * @throws ClientExceptionInterface
      */
-    public function testSetToStorage(bool $secure, string $host, string $path)
+    public function testSetToStorage(bool $secure, string $host, string $path): void
     {
-
         $storage = new Storage();
 
         $client = new CookieClientDecorator(new FakeHttpClient(new Handler()), $storage);
@@ -57,13 +56,13 @@ class CookieClientTest extends TestCase
 
     /**
      * @param string $uri
-     * @param array $expected
+     * @param array<string, string> $expected
      *
      * @dataProvider provideGetFromStorage
      *
      * @throws ClientExceptionInterface
      */
-    public function testGetFromStorage(string $uri, array $expected)
+    public function testGetFromStorage(string $uri, array $expected): void
     {
         $set = [
             [
@@ -134,11 +133,12 @@ class CookieClientTest extends TestCase
         $request = new Request('GET', $uri, ['Accept' => 'text/plain']);
         $response = $client->sendRequest($request);
         $json = $response->getBody()->__toString();
+        /** @var array<string, string> $cookies */
         $cookies = json_decode($json, true);
         $this->assertCount(count($expected), $cookies);
         foreach ($expected as $name => $value) {
             $this->assertArrayHasKey($name, $cookies);
-            $this->assertSame($value, $cookies[$name]);
+            $this->assertSame($value, $cookies[$name] ?? null);
         }
     }
 
@@ -150,6 +150,9 @@ class CookieClientTest extends TestCase
         ];
     }
 
+    /**
+     * @return array{0: string, 1: array<string, string>}[]
+     */
     public function provideGetFromStorage(): array
     {
         return [
@@ -169,7 +172,7 @@ class CookieClientTest extends TestCase
         string $path,
         bool $secure,
         bool $temporary
-    ) {
+    ): void {
         $this->assertSame($value, $cookie['value']);
         $this->assertSame($domain, $cookie['domain']);
         $this->assertSame($path, $cookie['path']);
