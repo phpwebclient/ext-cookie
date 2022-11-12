@@ -8,6 +8,16 @@ use Webclient\Extension\Cookie\Cookie\Storage as BaseStorage;
 
 class Storage extends BaseStorage
 {
+    /**
+     * @return array<string, array{
+     *     value: string,
+     *     domain: string,
+     *     path: string,
+     *     httpOnly: bool,
+     *     secure: bool,
+     *     expired: int,
+     * }>
+     */
     public function getItems(): array
     {
         $result = [];
@@ -28,7 +38,7 @@ class Storage extends BaseStorage
         return $result;
     }
 
-    public function save()
+    public function save(): void
     {
     }
 }

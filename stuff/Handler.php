@@ -32,7 +32,10 @@ class Handler implements RequestHandlerInterface
         if (!$path) {
             $path = '/';
         }
-        foreach ($query['cookie'] as $name => $item) {
+
+        /** @var array<string, string> $queryCookies */
+        $queryCookies = $query['cookie'];
+        foreach ($queryCookies as $name => $item) {
             $cookies[$name]['value'] = $name . '=' . $item;
             $cookies[$name]['domain'] = 'Domain=' . $host;
             $cookies[$name]['path'] = 'Path=' . $path;
@@ -42,22 +45,25 @@ class Handler implements RequestHandlerInterface
                 $cookies[$name]['secure'] = 'Secure';
             }
         }
-        if (array_key_exists('subdomain', $query) && is_array($query['subdomain'])) {
-            foreach ($query['subdomain'] as $name) {
-                if (!array_key_exists($name, $cookies)) {
-                    continue;
-                }
-                $cookies[$name]['domain'] = 'Domain=.' . $host;
+
+        /** @var string[] $querySubdomain */
+        $querySubdomain = (array)($query['subdomain'] ?? []);
+        foreach ($querySubdomain as $name) {
+            if (!array_key_exists($name, $cookies)) {
+                continue;
             }
+            $cookies[$name]['domain'] = 'Domain=.' . $host;
         }
-        if (array_key_exists('temp', $query) && is_array($query['temp'])) {
-            foreach ($query['temp'] as $name) {
-                if (!array_key_exists($name, $cookies)) {
-                    continue;
-                }
-                unset($cookies[$name]['expired']);
+
+        /** @var string[] $queryTemp */
+        $queryTemp = (array)($query['temp'] ?? []);
+        foreach ($queryTemp as $name) {
+            if (!array_key_exists($name, $cookies)) {
+                continue;
             }
+            unset($cookies[$name]['expired']);
         }
+
         foreach ($cookies as $cookie) {
             $response = $response->withAddedHeader('Set-Cookie', implode('; ', $cookie));
         }

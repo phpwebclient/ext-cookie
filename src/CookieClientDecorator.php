@@ -30,14 +30,13 @@ final class CookieClientDecorator implements ClientInterface
         if ($cookies) {
             if ($request->hasHeader('Cookie')) {
                 foreach (explode(',', $request->getHeaderLine('Cookie')) as $line) {
-                    $line = trim($line);
-                    list($name, $value) = array_replace([null, null], explode('=', $line, 2));
-                    $name = trim($name);
-                    $value = trim($value);
-                    if (!$name || !$value) {
+                    [$headerCookieName, $headerCookieValue] = array_replace(['', ''], explode('=', trim($line), 2));
+                    $headerCookieName = trim($headerCookieName);
+                    $headerCookieValue = trim($headerCookieValue);
+                    if ($headerCookieName === '' || $headerCookieValue === '') {
                         continue;
                     }
-                    $cookies[$name] = $value;
+                    $cookies[$headerCookieName] = $headerCookieValue;
                 }
             }
             foreach ($cookies as $cookie => $value) {
@@ -62,7 +61,7 @@ final class CookieClientDecorator implements ClientInterface
      * @param string $header
      * @param string $domain
      */
-    private function setCookieFromHeader(string $header, string $domain)
+    private function setCookieFromHeader(string $header, string $domain): void
     {
         $arr = explode(';', $header);
         $cookies = [];
@@ -70,10 +69,10 @@ final class CookieClientDecorator implements ClientInterface
         $expires = 0;
         $secure = false;
         foreach ($arr as $item) {
-            list($key, $value) = array_replace(['', ''], explode('=', $item, 2));
-            $key = trim($key);
-            $value = trim($value);
-            switch (strtolower($key)) {
+            $keyValue = explode('=', $item, 2);
+            $key = strtolower(trim($keyValue[0]));
+            $value = trim($keyValue[1] ?? '');
+            switch ($key) {
                 case 'domain':
                     if ($value) {
                         $domain = $value;
